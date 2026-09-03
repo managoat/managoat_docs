@@ -99,6 +99,39 @@ defmodule Managoat.Docs.ChecksTest do
     end
   end
 
+  describe "pages_resolve/1" do
+    test "reports a missing home page and a slug with an invalid response" do
+      missing_home = Module.concat(__MODULE__, "MissingHome#{System.unique_integer([:positive])}")
+
+      Module.create(
+        missing_home,
+        quote do
+          def get(""), do: :error
+          def slugs, do: []
+        end,
+        Macro.Env.location(__ENV__)
+      )
+
+      assert Checks.pages_resolve(missing_home) == [
+               "there is no home page: the nav names no index.md"
+             ]
+
+      invalid_page = Module.concat(__MODULE__, "InvalidPage#{System.unique_integer([:positive])}")
+
+      Module.create(
+        invalid_page,
+        quote do
+          def get(""), do: {:ok, %{title: "Home", body: "body"}}
+          def get("broken"), do: :error
+          def slugs, do: ["broken"]
+        end,
+        Macro.Env.location(__ENV__)
+      )
+
+      assert Checks.pages_resolve(invalid_page) == [~s("broken" does not resolve: :error)]
+    end
+  end
+
   describe "anchors_resolve/1" do
     test "names a link to an anchor the target page does not render" do
       docs = manual(Map.put(@sound, "index.md", "# Home\n\n[x](setup.md#no-such-heading)\n"))
@@ -244,6 +277,21 @@ defmodule Managoat.Docs.ChecksTest do
       assert [closes, count] = Checks.search_index_json_safe(stub)
       assert closes =~ "`</`"
       assert count =~ "decodes to 2 entries"
+    end
+
+    test "search_index_json_safe/1 reports malformed JSON" do
+      stub = Module.concat(__MODULE__, "InvalidJson#{System.unique_integer([:positive])}")
+
+      Module.create(
+        stub,
+        quote do
+          def search_index, do: []
+          def search_index_json, do: "not json"
+        end,
+        Macro.Env.location(__ENV__)
+      )
+
+      assert Checks.search_index_json_safe(stub) == ["search_index_json/0 is not valid JSON"]
     end
   end
 end
