@@ -208,6 +208,25 @@ end|
       assert html =~ "&lt;img"
     end
 
+    test "inline HTML is neutralized on the trusted path too" do
+      html = Markdown.to_trusted_html("before <em onclick=steal()>inside</em> after")
+
+      refute html =~ "<em"
+      assert html =~ "&lt;em"
+      assert html =~ "inside"
+    end
+
+    test "trusted markdown keeps safe images and unwraps unsafe ones" do
+      html =
+        Markdown.to_trusted_html(
+          "![safe](https://example.test/diagram.png) ![unsafe](data:image/svg+xml;base64,AAAA)"
+        )
+
+      assert html =~ ~s(src="https://example.test/diagram.png")
+      refute html =~ "data:image"
+      assert html =~ "unsafe"
+    end
+
     test "headings carry GFM-style ids so #anchor links resolve" do
       html = Markdown.to_trusted_html("## Back up `MASTER_SECRETS_KEY`\n\n## Crons: alerting")
       assert html =~ ~s(<h2 id="back-up-master_secrets_key">)

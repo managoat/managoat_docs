@@ -10,6 +10,14 @@ the package ships without a bump fails the release gate.
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-09-03
+
+### Changed
+
+- Raised the package's coverage gate from 90% to 96% after adding renderer
+  coverage for trusted inline HTML and image URLs, plus failure coverage for
+  missing pages and malformed search indexes.
+
 ## [0.1.0] - 2026-09-02
 
 ### Added

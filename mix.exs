@@ -1,7 +1,7 @@
 defmodule Managoat.Docs.MixProject do
   use Mix.Project
 
-  @version "0.1.0"
+  @version "0.1.1"
   @source_url "https://github.com/managoat/managoat_docs"
 
   def project do
@@ -19,10 +19,11 @@ defmodule Managoat.Docs.MixProject do
       docs: docs(),
       dialyzer: dialyzer(),
       test_coverage: [
-        # What this suite measures on its own: the compiler, the renderer and
-        # the checks, driven by the fixture manual. Raise it as the library's
-        # own tests grow; never lower it.
-        summary: [threshold: 90],
+        # The compiler, renderer and guardrail checks currently measure
+        # 96.93%, driven by the fixture manual and hostile public inputs. The
+        # remaining renderer misses are defensive dependency-failure paths;
+        # keep a little headroom for a real branch and never lower this gate.
+        summary: [threshold: 96],
         # The two `use` macros run at test-compile time, before cover
         # instruments anything, so they always report 0%. They are exercised
         # by the fixture module and by docs_test.exs (and by every host's
