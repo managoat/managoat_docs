@@ -63,7 +63,7 @@ defmodule Managoat.Docs.MixProject do
        only: [:dev, :test],
        runtime: false},
       # comrak, through MDEx. Every page renders through it, both paths.
-      {:mdex, "~> 0.13.5"},
+      {:mdex, "~> 0.14.0"},
       # Syntax highlighting for the trusted path. Called directly rather than
       # through MDEx's integration, which needs a NIF build an order of
       # magnitude larger (147 MB unpacked against 12 MB); see
