@@ -1,5 +1,14 @@
 # Managoat.Docs
 
+> **Archived 2026-10-15.** [Fountain](https://github.com/managoat/fountain),
+> this library's only consumer, no longer compiles its manual into the server:
+> the manual is a static build in Fountain's `site/`, which carries the parts
+> of this library it uses as plain modules
+> ([ADR 0081](https://github.com/managoat/fountain/blob/main/decisions/0081-the-manual-is-a-static-build.md),
+> [managoat/fountain#2766](https://github.com/managoat/fountain/pull/2766)).
+> Every release on Hex is retired; they stay installable, but there will be no
+> further releases.
+
 A documentation manual embedded at compile time, so a Phoenix app can serve
 it at `/docs` instead of publishing a second site; the markdown renderer
 that serves it (and closes the two XSS holes a plain markdown-to-HTML call
